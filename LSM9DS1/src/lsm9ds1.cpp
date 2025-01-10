@@ -16,7 +16,7 @@ namespace IMU
         RODOS::memcpy(LMS9DS1::MAG_BOUNDRIES, MAG_BOUNDRIES, 3 * 2 * sizeof(int16_t));
     }
 
-    LMS9DS1(RODOS::I2C_IDX idx) : RODOS::HAL_I2C(idx) {} // uses default calib values
+    LMS9DS1::LMS9DS1(RODOS::I2C_IDX idx) : RODOS::HAL_I2C(idx) {} // uses default calib values
 
     LMS9DS1::LMS9DS1() : RODOS::HAL_I2C(RODOS::I2C_IDX::I2C_IDX2) {} // PB10 & PB11
 
@@ -45,45 +45,69 @@ namespace IMU
 
     void LMS9DS1::read_raw()
     {
-        // TODO use imu output
+        auto i2cerror = [&]()
+        {
+            this->reset();
+            AT(NOW() + 5 * MILLISECONDS);
+            this->init(this->speed);
+            RODOS::PRINTF("reset IMU");
+        };
 
         //  accellerometer
-        LMS9DS1::writeRead(AccGyrADDR, ACC_X_L, 1, DATA_L, 1);
-        LMS9DS1::writeRead(AccGyrADDR, ACC_X_H, 1, DATA_H, 1);
+        if (LMS9DS1::writeRead(AccGyrADDR, ACC_X_L, 1, DATA_L, 1) <= 0)
+            i2cerror();
+        if (LMS9DS1::writeRead(AccGyrADDR, ACC_X_H, 1, DATA_H, 1) <= 0)
+            i2cerror();
         LMS9DS1::ACC_RAW_VALS[0] = DATA_L[0] + int16_t((DATA_H[0] << 8));
 
-        LMS9DS1::writeRead(AccGyrADDR, ACC_Y_L, 1, DATA_L, 1);
-        LMS9DS1::writeRead(AccGyrADDR, ACC_Y_H, 1, DATA_H, 1);
+        if (LMS9DS1::writeRead(AccGyrADDR, ACC_Y_L, 1, DATA_L, 1) <= 0)
+            i2cerror();
+        if (LMS9DS1::writeRead(AccGyrADDR, ACC_Y_H, 1, DATA_H, 1) <= 0)
+            i2cerror();
         LMS9DS1::ACC_RAW_VALS[1] = DATA_L[0] + int16_t((DATA_H[0] << 8));
 
-        LMS9DS1::writeRead(AccGyrADDR, ACC_Z_L, 1, DATA_L, 1);
-        LMS9DS1::writeRead(AccGyrADDR, ACC_Z_H, 1, DATA_H, 1);
+        if (LMS9DS1::writeRead(AccGyrADDR, ACC_Z_L, 1, DATA_L, 1) <= 0)
+            i2cerror();
+        if (LMS9DS1::writeRead(AccGyrADDR, ACC_Z_H, 1, DATA_H, 1) <= 0)
+            i2cerror();
         LMS9DS1::ACC_RAW_VALS[2] = DATA_L[0] + int16_t((DATA_H[0] << 8));
 
         // gyroscope
-        LMS9DS1::writeRead(AccGyrADDR, GYR_X_L, 1, DATA_L, 1);
-        LMS9DS1::writeRead(AccGyrADDR, GYR_X_H, 1, DATA_H, 1);
+        if (LMS9DS1::writeRead(AccGyrADDR, GYR_X_L, 1, DATA_L, 1) <= 0)
+            i2cerror();
+        if (LMS9DS1::writeRead(AccGyrADDR, GYR_X_H, 1, DATA_H, 1) <= 0)
+            i2cerror();
         LMS9DS1::GYR_RAW_VALS[0] = DATA_L[0] + int16_t((DATA_H[0] << 8));
 
-        LMS9DS1::writeRead(AccGyrADDR, GYR_Y_L, 1, DATA_L, 1);
-        LMS9DS1::writeRead(AccGyrADDR, GYR_Y_H, 1, DATA_H, 1);
+        if (LMS9DS1::writeRead(AccGyrADDR, GYR_Y_L, 1, DATA_L, 1) <= 0)
+            i2cerror();
+        if (LMS9DS1::writeRead(AccGyrADDR, GYR_Y_H, 1, DATA_H, 1) <= 0)
+            i2cerror();
         LMS9DS1::GYR_RAW_VALS[1] = DATA_L[0] + int16_t((DATA_H[0] << 8));
 
-        LMS9DS1::writeRead(AccGyrADDR, GYR_Z_L, 1, DATA_L, 1);
-        LMS9DS1::writeRead(AccGyrADDR, GYR_Z_H, 1, DATA_H, 1);
+        if (LMS9DS1::writeRead(AccGyrADDR, GYR_Z_L, 1, DATA_L, 1) <= 0)
+            i2cerror();
+        if (LMS9DS1::writeRead(AccGyrADDR, GYR_Z_H, 1, DATA_H, 1) <= 0)
+            i2cerror();
         LMS9DS1::GYR_RAW_VALS[2] = DATA_L[0] + int16_t((DATA_H[0] << 8));
 
         // magnetometer
-        LMS9DS1::writeRead(MagADDR, MAG_X_L, 1, DATA_L, 1);
-        LMS9DS1::writeRead(MagADDR, MAG_X_H, 1, DATA_H, 1);
+        if (LMS9DS1::writeRead(MagADDR, MAG_X_L, 1, DATA_L, 1) <= 0)
+            i2cerror();
+        if (LMS9DS1::writeRead(MagADDR, MAG_X_H, 1, DATA_H, 1) <= 0)
+            i2cerror();
         LMS9DS1::MAG_RAW_VALS[0] = DATA_L[0] + int16_t((DATA_H[0] << 8));
 
-        LMS9DS1::writeRead(MagADDR, MAG_Y_L, 1, DATA_L, 1);
-        LMS9DS1::writeRead(MagADDR, MAG_Y_H, 1, DATA_H, 1);
+        if (LMS9DS1::writeRead(MagADDR, MAG_Y_L, 1, DATA_L, 1) <= 0)
+            i2cerror();
+        if (LMS9DS1::writeRead(MagADDR, MAG_Y_H, 1, DATA_H, 1) <= 0)
+            i2cerror();
         LMS9DS1::MAG_RAW_VALS[1] = DATA_L[0] + int16_t((DATA_H[0] << 8));
 
-        LMS9DS1::writeRead(MagADDR, MAG_Z_L, 1, DATA_L, 1);
-        LMS9DS1::writeRead(MagADDR, MAG_Z_H, 1, DATA_H, 1);
+        if (LMS9DS1::writeRead(MagADDR, MAG_Z_L, 1, DATA_L, 1) <= 0)
+            i2cerror();
+        if (LMS9DS1::writeRead(MagADDR, MAG_Z_H, 1, DATA_H, 1) <= 0)
+            i2cerror();
         LMS9DS1::MAG_RAW_VALS[2] = DATA_L[0] + int16_t((DATA_H[0] << 8));
     }
 

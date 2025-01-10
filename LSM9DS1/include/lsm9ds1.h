@@ -4,8 +4,10 @@
 
 namespace IMU
 {
-    class LMS9DS1 : public RODOS::HAL_I2C
+    class LMS9DS1 : protected RODOS::HAL_I2C
     {
+        uint32_t speed;
+
     public:
         /**
          * @brief default calibration
@@ -13,9 +15,9 @@ namespace IMU
          * repository to get your calibration values :)
          */
 
-        int16_t GYR_CALIB_VALS[3] = {0, 0, 0};                  // offset
-        int16_t ACC_CALIB_VALS[3] = {0, 0, 0};                  // offset
-        int16_t MAG_BOUNDRIES[3][2] = {{0, 0}, {0, 0}, {0, 0}}; //{x[min,max], y[min,max], z[min,max]}
+        int16_t GYR_CALIB_VALS[3] = {93, 27, 30};                               // offset
+        int16_t ACC_CALIB_VALS[3] = {-244, 0, 0};                               // offset
+        int16_t MAG_BOUNDRIES[3][2] = {{-545, 523}, {-767, 761}, {-1044, 449}}; //{x[min,max], y[min,max], z[min,max]}
 
         /**
          * @brief databuffers for HAL_I2C.writeRead
