@@ -45,12 +45,10 @@ namespace IMU
 
     void LMS9DS1::read_raw()
     {
+        // this used to do a bit more but now it's only one line but I cba to search+replace i2cerror() to this->reset()
         auto i2cerror = [&]()
         {
             this->reset();
-            AT(NOW() + 5 * MILLISECONDS);
-            this->init(this->speed);
-            RODOS::PRINTF("reset IMU");
         };
 
         //  accellerometer
