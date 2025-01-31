@@ -20,7 +20,11 @@ namespace IMU
 
     LMS9DS1::LMS9DS1() : RODOS::HAL_I2C(RODOS::I2C_IDX::I2C_IDX2) {} // PB10 & PB11
 
-    void LMS9DS1::init_regs(){
+    int32_t LMS9DS1::init(uint32_t speed)
+    {
+        this-> speed  = speed;
+        int32_t ret = HAL_I2C::init(speed);
+
         // init all the registered required for I2C communications
         uint8_t INIT_REG_ACC[2] = {0x20, 0b10000011};
         LMS9DS1::write(AccGyrADDR, INIT_REG_ACC, 2);
