@@ -75,6 +75,8 @@ namespace IMU
         // constructor for default values we used in the floatsat to avoid copy pasting the calib values 24/7
         LMS9DS1();
 
+        void init_regs();
+
         int32_t init(uint32_t speed);
 
         // raw for calibration, adj for normal use

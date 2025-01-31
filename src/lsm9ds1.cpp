@@ -20,10 +20,7 @@ namespace IMU
 
     LMS9DS1::LMS9DS1() : RODOS::HAL_I2C(RODOS::I2C_IDX::I2C_IDX2) {} // PB10 & PB11
 
-    int32_t LMS9DS1::init(uint32_t speed)
-    {
-        int32_t ret = HAL_I2C::init(speed);
-
+    void LMS9DS1::init_regs(){
         // init all the registered required for I2C communications
         uint8_t INIT_REG_ACC[2] = {0x20, 0b10000011};
         LMS9DS1::write(AccGyrADDR, INIT_REG_ACC, 2);
@@ -39,9 +36,17 @@ namespace IMU
 
         uint8_t INIT_REG_MAG_3[2] = {0x22, 0b00000000};
         LMS9DS1::write(MagADDR, INIT_REG_MAG_3, 2);
+    }
+
+    int32_t LMS9DS1::init(uint32_t speed)
+    {
+        int32_t ret = HAL_I2C::init(speed);
+
+        init_regs();
 
         return ret;
     }
+
 
     void LMS9DS1::read_raw()
     {
@@ -49,6 +54,10 @@ namespace IMU
         auto i2cerror = [&]()
         {
             this->reset();
+            this->init(400000);
+            PRINTF("RESET IMU\n");
+            AT(NOW() + 5 * MILLISECONDS);
+            init_regs();
         };
 
         //  accellerometer
